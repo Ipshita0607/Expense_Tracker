@@ -3,44 +3,75 @@ const amountInput = document.getElementById("amount");
 const addBtn = document.getElementById("addBtn");
 const expenseList = document.getElementById("expenseList");
 const total = document.getElementById("total");
+const count = document.getElementById("count");
 
 let totalAmount = 0;
+let totalItems = 0;
 
-addBtn.addEventListener("click", addExpense);
-
+// Add Expense
 function addExpense() {
-
-    const expenseName = nameInput.value;
+    const expenseName = nameInput.value.trim();
     const expenseAmount = Number(amountInput.value);
 
     if (expenseName === "" || expenseAmount <= 0) {
-        alert("Please enter valid details");
+        alert("Please enter valid details!");
         return;
     }
 
-    totalAmount += expenseAmount;
-    total.textContent = totalAmount;
-
+    // Create list item
     const li = document.createElement("li");
 
     li.innerHTML = `
-        <span>${expenseName}</span>
-        <span>₹${expenseAmount}</span>
-        <button class="delete">Delete</button>
+        <div class="expense-info">
+            <span>${expenseName}</span>
+            <span class="amount">₹${expenseAmount}</span>
+        </div>
+
+        <button class="delete">
+            <i class="fa-solid fa-trash"></i> Delete
+        </button>
     `;
 
-    expenseList.appendChild(li);
+    // Increase totals
+    totalAmount += expenseAmount;
+    total.textContent = totalAmount;
 
-    nameInput.value = "";
-    amountInput.value = "";
+    totalItems++;
+    count.textContent = totalItems;
 
+    // Delete Expense
     li.querySelector(".delete").addEventListener("click", function () {
 
         totalAmount -= expenseAmount;
         total.textContent = totalAmount;
 
-        li.remove();
+        totalItems--;
+        count.textContent = totalItems;
 
+        li.remove();
     });
 
+    // Add to list
+    expenseList.appendChild(li);
+
+    // Clear inputs
+    nameInput.value = "";
+    amountInput.value = "";
+    nameInput.focus();
 }
+
+// Button Click
+addBtn.addEventListener("click", addExpense);
+
+// Press Enter to Add Expense
+nameInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        addExpense();
+    }
+});
+
+amountInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        addExpense();
+    }
+});
